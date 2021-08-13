@@ -1,0 +1,13 @@
+*\#*
+*~
+*.o
+*.a
+*.lo
+*.su
+*.so
+*.so.*
+*.gch
+*.gcov
+*.gcno
+*.gcda
+/libparsesfnt-all.c
