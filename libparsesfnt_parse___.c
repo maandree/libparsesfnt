@@ -122,6 +122,7 @@ libparsesfnt_parse___(const char *data, size_t size, void *infop, size_t esize,
 	if (offset + count * need > size ||
 	    (tag && (tag->length < count * need ||
 	             tag->length > size ||
+	             tag->offset > size - tag->length ||
 	             tag_offset > tag->length ||
 	             first + count > (tag->length - tag_offset) / need)))
 		goto ebfont;

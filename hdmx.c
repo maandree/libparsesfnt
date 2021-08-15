@@ -56,11 +56,11 @@ ebfont:
 
 
 int
-libparsesfnt_parse_hdmx_v0_subentry(
-	const char *data, size_t size,
-	uint8_t *widthp,
-	const struct libparsesfnt_tabdir_entry *tag, const struct libparsesfnt_hdmx *hdmx, size_t record,
-	size_t first, size_t count)
+libparsesfnt_parse_hdmx_v0_subentries(
+			const char *data, size_t size,
+			uint8_t *widthp,
+			const struct libparsesfnt_tabdir_entry *tag, const struct libparsesfnt_hdmx *hdmx, size_t record,
+			size_t first, size_t count)
 {
 	size_t off;
 

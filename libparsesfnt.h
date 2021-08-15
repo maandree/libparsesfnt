@@ -796,10 +796,65 @@ int libparsesfnt_parse_hdmx_v0_entries(
 	const struct libparsesfnt_tabdir_entry *tag, const struct libparsesfnt_hdmx *hdmx,
 	size_t first, size_t count);
 
-int libparsesfnt_parse_hdmx_v0_subentry(
+int libparsesfnt_parse_hdmx_v0_subentries(
 	const char *data, size_t size,
 	uint8_t *widthp,
 	const struct libparsesfnt_tabdir_entry *tag, const struct libparsesfnt_hdmx *hdmx, size_t record,
+	size_t first, size_t count);
+
+
+
+/* === 'post' (glyph name and PostScript compatibility) === */
+/* https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6post.html */
+
+struct libparsesfnt_post_format2_subtable {
+	uint16_t number_of_glyphs;
+};
+#define LIBPARSESFNT_POST_FORMAT2__ "2"
+
+struct libparsesfnt_post {
+	uint32_t format;
+	int32_t italic_angle;
+	int16_t underline_position;
+	int16_t underline_thickness;
+	uint32_t is_fixed_pitch;
+	uint32_t min_mem_type_42;
+	uint32_t max_mem_type_42;
+	uint32_t min_mem_type_1;
+	uint32_t max_mem_type_1;
+	union {
+		struct libparsesfnt_post_format2_subtable v2; /* 2.x */
+	} subtable;
+};
+#define LIBPARSESFNT_POST__ "4-422+44444"
+
+int libparsesfnt_parse_post(
+	const char *data, size_t size,
+	struct libparsesfnt_post *infop,
+	const struct libparsesfnt_tabdir_entry *tag);
+
+int libparsesfnt_parse_post_format_2_0_indices(
+	const char *data, size_t size,
+	uint16_t *indexp,
+	const struct libparsesfnt_tabdir_entry *tag,
+	size_t first, size_t count);
+
+int libparsesfnt_parse_post_format_2_0_name(
+	const char *data, size_t size,
+	char namep[256],
+	const struct libparsesfnt_tabdir_entry *tag, const struct libparsesfnt_post *post,
+	size_t *offsetp /* start at 0 */);
+
+int libparsesfnt_parse_post_format_2_5_offsets(
+	const char *data, size_t size,
+	int16_t *offsetp,
+	const struct libparsesfnt_tabdir_entry *tag,
+	size_t first, size_t count);
+
+int libparsesfnt_parse_post_format_4_0_indices(
+	const char *data, size_t size,
+	uint16_t *indexp,
+	const struct libparsesfnt_tabdir_entry *tag,
 	size_t first, size_t count);
 
 

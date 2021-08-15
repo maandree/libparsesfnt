@@ -23,7 +23,8 @@ MODULES =\
 	gasp\
 	avar\
 	meta\
-	hdmx
+	hdmx\
+	post
 
 OBJ =\
 	libparsesfnt_parse___.o\
