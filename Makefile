@@ -22,7 +22,8 @@ MODULES =\
 	fdsc\
 	gasp\
 	avar\
-	meta
+	meta\
+	hdmx
 
 OBJ =\
 	libparsesfnt_parse___.o\

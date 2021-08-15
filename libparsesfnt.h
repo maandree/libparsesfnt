@@ -768,4 +768,39 @@ int libparsesfnt_parse_meta_entries(
 	size_t first, size_t count);
 
 
+
+/* === 'hdmx' (horizontal device metrics) === */
+/* https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6hdmx.html */
+
+struct libparsesfnt_hdmx {
+	uint16_t version;
+	uint16_t num_records;
+	uint32_t record_size; /* includes alignment */
+};
+#define LIBPARSESFNT_HDMX__ "224"
+
+struct libparsesfnt_hdmx_v0_entry {
+	uint8_t pixel_size;
+	uint8_t maximum_width;
+};
+#define LIBPARSESFNT_HDMX_V0_ENTRY__ "11"
+
+int libparsesfnt_parse_hdmx(
+	const char *data, size_t size,
+	struct libparsesfnt_hdmx *infop,
+	const struct libparsesfnt_tabdir_entry *tag);
+
+int libparsesfnt_parse_hdmx_v0_entries(
+	const char *data, size_t size,
+	struct libparsesfnt_hdmx_v0_entry *infop,
+	const struct libparsesfnt_tabdir_entry *tag, const struct libparsesfnt_hdmx *hdmx,
+	size_t first, size_t count);
+
+int libparsesfnt_parse_hdmx_v0_subentry(
+	const char *data, size_t size,
+	uint8_t *widthp,
+	const struct libparsesfnt_tabdir_entry *tag, const struct libparsesfnt_hdmx *hdmx, size_t record,
+	size_t first, size_t count);
+
+
 #endif
