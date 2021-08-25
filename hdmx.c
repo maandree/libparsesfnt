@@ -22,7 +22,7 @@ libparsesfnt_parse_hdmx(
 
 
 int
-libparsesfnt_parse_hdmx_entries(
+libparsesfnt_parse_hdmx_v0_entries(
 			const char *data, size_t size,
 			struct libparsesfnt_hdmx_v0_entry *infop,
 			const struct libparsesfnt_tabdir_entry *tag, const struct libparsesfnt_hdmx *hdmx,

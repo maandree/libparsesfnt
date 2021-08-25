@@ -83,6 +83,7 @@ libparsesfnt_parse___(const char *data, size_t size, void *infop, size_t esize,
 	size_t tag_offset = 0;
 	size_t need = 0;
 	size_t padding = 0;
+	size_t multiplier = 1;
 	int is_signed = 0;
 	char *info = infop;
 
@@ -97,16 +98,21 @@ libparsesfnt_parse___(const char *data, size_t size, void *infop, size_t esize,
 		tag_offset = offset - tag->offset;
 
 	for (s = fmt; *s; s++) {
-		if (*s == 'p')
-			padding += 1;
-		else if (*s == '1' || *s == '.')
-			need += 1;
-		else if (*s == '2')
-			need += 2;
-		else if (*s == '4')
-			need += 4;
-		else if (*s == '8')
-			need += 8;
+		if (*s == 'p') {
+			padding += multiplier * 1;
+		} else if (*s == '1' || *s == '.') {
+			need += multiplier * 1;
+		} else if (*s == '2') {
+			need += multiplier * 2;
+		} else if (*s == '4') {
+			need += multiplier * 4;
+		} else if (*s == '8') {
+			need += multiplier * 8;
+		} else if (*s == '{') {
+			multiplier = strtoul(s, (void *)&s, 10);
+			continue;
+		}
+		multiplier = 1;
 	}
 
 	if (count > SIZE_MAX - first ||
@@ -132,48 +138,55 @@ libparsesfnt_parse___(const char *data, size_t size, void *infop, size_t esize,
 	padding = esize - need - padding;
 	for (; count--; info = &info[padding]) {
 		for (s = fmt; *s; s++) {
-			if (*s == 'p') {
-				*info++ = 0;
-			} else if (*s == '.') {
-				*info++ = *data++;
-			} else if (*s == '1') {
-				*(uint8_t *)info = *(const uint8_t *)data;
-				if (is_signed)
-					sign8((void *)info);
-				data = &data[1];
-				info = &info[1];
+			while (multiplier--) {
+				if (*s == 'p') {
+					*info++ = 0;
+				} else if (*s == '.') {
+					*info++ = *data++;
+				} else if (*s == '1') {
+					*(uint8_t *)info = *(const uint8_t *)data;
+					if (is_signed)
+						sign8((void *)info);
+					data = &data[1];
+					info = &info[1];
 #ifdef __GNUC__
 # pragma GCC diagnostic push
 # pragma GCC diagnostic ignored "-Wcast-align" /* in practice alignment will be correct */
 #endif
-			} else if (*s == '2') {
-				*(uint16_t *)info = parse16(data);
-				if (is_signed)
-					sign16((void *)info);
-				data = &data[2];
-				info = &info[2];
-			} else if (*s == '4') {
-				*(uint32_t *)info = parse32(data);
-				if (is_signed)
-					sign32((void *)info);
-				data = &data[4];
-				info = &info[4];
-			} else if (*s == '8') {
-				*(uint64_t *)info = parse64(data);
-				if (is_signed)
-					sign64((void *)info);
-				data = &data[8];
-				info = &info[8];
+				} else if (*s == '2') {
+					*(uint16_t *)info = parse16(data);
+					if (is_signed)
+						sign16((void *)info);
+					data = &data[2];
+					info = &info[2];
+				} else if (*s == '4') {
+					*(uint32_t *)info = parse32(data);
+					if (is_signed)
+						sign32((void *)info);
+					data = &data[4];
+					info = &info[4];
+				} else if (*s == '8') {
+					*(uint64_t *)info = parse64(data);
+					if (is_signed)
+						sign64((void *)info);
+					data = &data[8];
+					info = &info[8];
 #ifdef __GNUC__
 # pragma GCC diagnostic pop
 #endif
-			} else if (*s == '-') {
-				is_signed = 1;
-			} else if (*s == '+') {
-				is_signed = 0;
-			} else {
-				abort();
+				} else if (*s == '-') {
+					is_signed = 1;
+				} else if (*s == '+') {
+					is_signed = 0;
+				} else if (*s == '{') {
+					multiplier = strtoul(s, (void *)&s, 10);
+					goto continue_s;
+				} else {
+					abort();
+				}
 			}
+			multiplier = 1;
+		continue_s:;
 		}
 	}
 

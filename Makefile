@@ -24,7 +24,12 @@ MODULES =\
 	avar\
 	meta\
 	hdmx\
-	post
+	post\
+	cmap\
+	bdat\
+	bloc\
+	sbix\
+	ebsc
 
 OBJ =\
 	libparsesfnt_parse___.o\
